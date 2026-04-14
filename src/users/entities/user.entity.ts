@@ -13,6 +13,11 @@ import { Like } from '../../post/entities/like.entity';
 import { Follow } from '../../post/entities/follow.entity';
 import { Notification } from '../../notification/entities/notification.entity';
 
+import { Message } from '../../message/entities/message.entity';
+import { JobAssignment } from '../../jobs/entities/job-assignment.entity';
+import { JobSubmission } from '../../jobs/entities/job-submission.entity';
+import { Meeting } from 'src/meeting/entities/meeting.entity';
+
 export enum UserRole {
   STUDENT = 'STUDENT',
   ALUMNI = 'ALUMNI',
@@ -33,14 +38,14 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Column({ nullable: true })
+  @Column()
   password: string;
 
   @Column({ nullable: true })
-  firstName: string;
+  firstName?: string;
 
   @Column({ nullable: true })
-  lastName: string;
+  lastName?: string;
 
   @Column({ type: 'text', nullable: true })
   bio?: string;
@@ -123,19 +128,16 @@ export class User {
 
   /*
   =========================
-  RELATIONS
+  SOCIAL RELATIONS
   =========================
   */
 
-  // User posts
   @OneToMany(() => Post, (post) => post.author)
   posts: Post[];
 
-  // User comments
   @OneToMany(() => Comment, (comment) => comment.author)
   comments: Comment[];
 
-  // Likes by user
   @OneToMany(() => Like, (like) => like.user)
   likes: Like[];
 
@@ -147,11 +149,51 @@ export class User {
   @OneToMany(() => Follow, (follow) => follow.follower)
   following: Follow[];
 
-  // Notifications received
+  /*
+  =========================
+  NOTIFICATIONS
+  =========================
+  */
+
   @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];
 
-  // Notifications created by this user
   @OneToMany(() => Notification, (notification) => notification.creator)
   notificationsCreated: Notification[];
+
+  /*
+  =========================
+  MESSAGES
+  =========================
+  */
+
+  @OneToMany(() => Message, (message) => message.sender)
+  messagesSent: Message[];
+
+  @OneToMany(() => Message, (message) => message.receiver)
+  messagesReceived: Message[];
+
+  /*
+  =========================
+  JOB SYSTEM
+  =========================
+  */
+
+  @OneToMany(() => JobAssignment, (assignment) => assignment.createdBy)
+  jobAssignments: JobAssignment[];
+
+  @OneToMany(() => JobSubmission, (submission) => submission.student)
+  jobSubmissions: JobSubmission[];
+
+  /*
+  =========================
+  MEETINGS
+  =========================
+  */
+
+  @OneToMany(() => Meeting, (meeting) => meeting.student)
+  meetingsAsStudent: Meeting[];
+
+  @OneToMany(() => Meeting, (meeting) => meeting.mentor)
+  meetingsAsMentor: Meeting[];
 }

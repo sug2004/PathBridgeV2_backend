@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/create.post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Post } from './entities/post.entity';
-import { Repository, DataSource } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Like } from './entities/like.entity';
 import { Comment } from './entities/comment.entity';
 import {

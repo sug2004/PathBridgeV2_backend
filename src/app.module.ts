@@ -7,6 +7,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
 import { NotificationModule } from './notification/notification.module';
+import { MessageModule } from './message/message.module';
+import { MeetingModule } from './meeting/meeting.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
   imports: [
@@ -17,12 +20,22 @@ import { NotificationModule } from './notification/notification.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
+        // return {
+        //   type: 'postgres',
+        //   url: config.get<string>('DATABASE_URL'),
+        //   autoLoadEntities: true,
+        //   synchronize: true,
+        //   ssl: { rejectUnauthorized: false },
+        // };
         return {
           type: 'postgres',
-          url: config.get<string>('DATABASE_URL'),
+          host: config.get<string>('DB_HOST'),
+          port: +(config.get<number>('DB_PORT') ?? 5432),
+          username: config.get<string>('DB_USERNAME'),
+          password: config.get<string>('DB_PASSWORD'),
+          database: config.get<string>('DB_DATABASE'),
           autoLoadEntities: true,
-          synchronize: true,
-          ssl: { rejectUnauthorized: false },
+          synchronize: true, // Set to false in production
         };
       },
       inject: [ConfigService],
@@ -31,6 +44,9 @@ import { NotificationModule } from './notification/notification.module';
     UsersModule,
     PostModule,
     NotificationModule,
+    MessageModule,
+    MeetingModule,
+    JobsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
